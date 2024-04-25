@@ -77,6 +77,11 @@
 
         const canvas = document.querySelector('canvas.webgl')
 
+        document.addEventListener('click', function() {
+    var audio = new Audio('music.mp3');
+    audio.play();
+}, { once: true });
+
         // Scene
         const scene = new THREE.Scene()
 
