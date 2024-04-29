@@ -73,9 +73,6 @@
 
         .links a {
             text-decoration: none;
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
             padding: 10px 20px;
             border: 2px solid #1B9CFC;
             border-radius: 10px;
@@ -108,7 +105,7 @@
         document.addEventListener('click', function() {
     var audio = new Audio('music.mp3');
     audio.play();
-}, { once: true });
+});
 
         // Scene
         const scene = new THREE.Scene()
