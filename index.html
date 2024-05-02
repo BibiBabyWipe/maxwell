@@ -1,194 +1,113 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <meta charset=utf-8>
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>MAXWELL THE CAT</title>
-    <style>
-        *{
-            margin: 0px;
-            padding: 0px;
-            font-family: Poppins;
-        }
-        body {
-            margin: 0px;
-            overflow: hidden;
-            background-image: url('catto.gif');
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-        }
+<html lang="en">
+	<head>
+	  <title>three.js webgl - loaders - USDZLoader</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<style>
+			body {
+				background-color: #eee;
+				color: #444;
+			}
+			a {
+				color: #08f;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="info">
+			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - USDZLoader
+		</div>
 
-        div{
-            position: absolute;
-            top: 50%;
-            left: 25%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            flex-direction: column;
-            text-align: center;
-        }
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "../build/three.module.js",
+					"three/addons/": "./jsm/"
+				}
+			}
+		</script>
 
-        h1{
-            color: white;
-            font-size: 50px;
-        }
+		<script type="module">
 
-        h2{
-            color: white;
-            font-size: 100px;
-        }
+			import * as THREE from 'three';
 
-        h3{
-            color: white;
-            font-size: 50px;
-            font-weight: lighter;
-        }
+			import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+			import { RGBELoader } from 'three/addons/loaders/RGBELoader.js';
+			import { USDZLoader } from 'three/addons/loaders/USDZLoader.js';
 
-        button{
-            border: none;
-            background: #1B9CFC;
-            color: white;
-            border-radius: 10px;
-            width: 50%;
-            height: 64px;
-            font-size: 40px;
-            font-weight: bold;
-            text-transform: uppercase;
-            white-space: normal;
-            text-decoration: none;
-        }
+			let camera, scene, renderer;
 
-        .webgl{
-            position: absolute;
-            top: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .links {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-        }
+			init();
+			animate();
 
-        .links a {
-            text-decoration: none;
-            padding: 10px 20px;
-            border: 2px solid #1B9CFC;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-        }
+			async function init() {
 
-        .links a:hover {
-            background-color: #1B9CFC;
-            color: white;
-        }
-    </style>
-</head>
-<body>
-    <canvas class="webgl"></canvas>
-    <div>
-        <a href="https://etherscan.io">
-            <h1>MAXWELL THE CAT CA:0x000000</h1>
-        </a><a href="https://t.me/MAXWELLONBASE">
-            <h1>TELEGRAM</h1>
-        </a><a href="https://twitter.com/MAXWELLONBASE">
-            <h1>TWITTER</h1>
-        </a><a href="https://dexscreener.com/base/0x0000">
-            <h1>DEXSCREENER</h1>
-        </a>
-    </div>
+				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 100 );
+				camera.position.set( 0, 0.75, - 1.5 );
 
-    <script type="module">
-        import { OrbitControls } from 'https://unpkg.com/three@0.127.0/examples/jsm/controls/OrbitControls.js';
-        import * as THREE from 'https://unpkg.com/three@0.127.0/build/three.module.js';
+				scene = new THREE.Scene();
 
-        const canvas = document.querySelector('canvas.webgl')
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.toneMapping = THREE.ACESFilmicToneMapping;
+				renderer.toneMappingExposure = 2.0;
+				document.body.appendChild( renderer.domElement );
 
-        document.addEventListener('click', function() {
-    var audio = new Audio('music.mp3');
-    audio.play();
-}, { once: true });
+				const controls = new OrbitControls( camera, renderer.domElement );
+				controls.minDistance = 1;
+				controls.maxDistance = 8;
+				// controls.target.y = 15;
+				// controls.update();
 
-        // Scene
-        const scene = new THREE.Scene()
+				const rgbeLoader = new RGBELoader()
+					.setPath( 'textures/equirectangular/' );
 
-        const textureLoader = new THREE.TextureLoader()
-        const myTexture = textureLoader.load('https://i.kym-cdn.com/photos/images/original/002/486/154/c06.gif')
+				const usdzLoader = new USDZLoader()
+					.setPath( 'models/usdz/' );
 
+				const [ texture, model ] = await Promise.all( [
+					rgbeLoader.loadAsync( 'venice_sunset_1k.hdr' ),
+					usdzLoader.loadAsync( 'max.usdz' ),
+				] );
 
-        // Object
-        const geometry = new THREE.BoxGeometry(1,1,1)
-        const geometry2 = new THREE.DodecahedronGeometry(0.5,3)
-        const material = new THREE.MeshBasicMaterial({
-            map: myTexture
-        })
-        const boxMesh = new THREE.Mesh(geometry,material)
-        const sphereMesh = new THREE.Mesh(geometry2,material)
-        scene.add(boxMesh)
-        // scene.add(sphereMesh)
-        boxMesh.position.x = 0
-        boxMesh.position.y = 0.8
-        sphereMesh.position.x = -1.6
-        sphereMesh.position.y = 0.5
-        geometry.center()
-        // Sizes
-        const sizes = {
-            width:window.innerWidth,
-            height:window.innerHeight
-        }
+				// environment
 
-        // Renderer gets updated each time window is resized
-        window.addEventListener('resize',()=>{
-            sizes.width = window.innerWidth
-            sizes.height = window.innerHeight
+				texture.mapping = THREE.EquirectangularReflectionMapping;
 
-            camera.aspect = sizes.width/sizes.height
-            camera.updateProjectionMatrix()
+				scene.background = texture;
+				scene.backgroundBlurriness = 0.5;
+				scene.environment = texture;
 
-            renderer.setSize(sizes.width,sizes.height)
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
+				// model
 
-        })
+				model.position.y = 0.25;
+				model.position.z = - 0.25;
+				scene.add( model );
 
-        // Camera
-        const camera = new THREE.PerspectiveCamera(75,sizes.width/sizes.height,0.1,100)
-        camera.position.z = 3
-        scene.add(camera)
+				window.addEventListener( 'resize', onWindowResize );
 
-        // Controls
-        const controls = new OrbitControls(camera, canvas)
+			}
 
-        controls.enableZoom = false;
-        controls.enableDamping = true
+			function onWindowResize() {
 
-        const renderer = new THREE.WebGLRenderer({
-            canvas: canvas,
-            alpha: true,
-        })
-        renderer.setSize(sizes.width,sizes.height)
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio,2))
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
 
-        const clock = new THREE.Clock()
+				renderer.setSize( window.innerWidth, window.innerHeight );
 
-        const tick = () => {
-            const elapsedTime = clock.getElapsedTime()
-            boxMesh.rotateX(30*0.0003)
-            boxMesh.rotateY(30*0.0003)
-            sphereMesh.rotateY(30*0.0003)
-            // mesh.position.y = Math.sin(elapsedTime) *0.1
-            boxMesh.position.z = Math.sin(elapsedTime) * 1
+			}
 
-            controls.update()
-            controls.enableDamping = true
-            renderer.render(scene,camera)
-            window.requestAnimationFrame(tick)
-        };
+			function animate() {
 
-        tick()  
-    </script>
-</body>
+				requestAnimationFrame( animate );
+
+				renderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
 </html>
