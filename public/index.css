@@ -16,7 +16,7 @@ body {
 }
 
 .border {
-  background: linear-gradient(90deg, gray, 90%, black);
+  background: linear-gradient(90deg, gray, 90%, rgb(207, 207, 207));
   height: 2px;
   width: 80vw;
   margin-top: 4px;
