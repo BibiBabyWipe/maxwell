@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.outputColorSpace = THREE.sRGBEncoding;
+renderer.outputEncoding = THREE.sRGBEncoding;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0xf0f0f0);
