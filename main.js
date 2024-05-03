@@ -7,8 +7,9 @@ renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0xf0f0f0);
+renderer.physicallyCorrectLights = true;
 renderer.setPixelRatio(window.devicePixelRatio);
-
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
