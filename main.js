@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.outputColorSpace = THREE.sRGBEncoding;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0xf0f0f0);
@@ -30,6 +30,15 @@ controls.autoRotate = false;
 controls.target = new THREE.Vector3(0, 1, 0);
 controls.update();
 
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+scene.add(ambientLight);
+
+const spotLight = new THREE.SpotLight(0xffffff, 300, 1000, 0.22, 1);
+spotLight.position.set(0, 100, 0);
+spotLight.castShadow = true;
+spotLight.shadow.bias = -0.0001;
+scene.add(spotLight);
+
 const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
 groundGeometry.rotateX(-Math.PI / 2);
 const groundMaterial = new THREE.MeshStandardMaterial({
@@ -41,12 +50,6 @@ groundMesh.castShadow = false;
 groundMesh.receiveShadow = true;
 scene.add(groundMesh);
 
-const spotLight = new THREE.SpotLight(0xffffff, 300, 1000, 0.22, 1);
-spotLight.position.set(0, 100, 0);
-spotLight.castShadow = true;
-spotLight.shadow.bias = -0.0001;
-scene.add(spotLight);
-
 const loader = new GLTFLoader().setPath('public/maxwell/');
 loader.load('scene.gltf', (gltf) => {
   console.log('loading model');
@@ -54,6 +57,7 @@ loader.load('scene.gltf', (gltf) => {
 
   mesh.traverse((child) => {
     if (child.isMesh) {
+      child.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
       child.castShadow = true;
       child.receiveShadow = true;
     }
