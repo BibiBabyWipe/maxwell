@@ -6,7 +6,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0xf0f0f0);
+renderer.setClearColor(0xccffcc);
 renderer.setPixelRatio(window.devicePixelRatio);
 
 renderer.shadowMap.enabled = true;
@@ -22,31 +22,26 @@ camera.position.set(4, 5, 40);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.enablePan = false;
-controls.minDistance = 5;
-controls.maxDistance = 160;
+controls.minDistance = 100;
+controls.maxDistance = 1000;
 controls.minPolarAngle = 0.5;
 controls.maxPolarAngle = 1.5;
-controls.autoRotate = false;
+controls.autoRotate = true;
 controls.target = new THREE.Vector3(0, 1, 0);
 controls.update();
 
 const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
 groundGeometry.rotateX(-Math.PI / 2);
 const groundMaterial = new THREE.MeshStandardMaterial({
-  color: 0x555555,
+  color: 0xffffff,
   side: THREE.DoubleSide
 });
 const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
 groundMesh.castShadow = false;
 groundMesh.receiveShadow = true;
 scene.add(groundMesh);
-
-const spotLight = new THREE.SpotLight(0xffffff, 300, 1000, 0.22, 1);
-spotLight.position.set(0, 100, 0);
-spotLight.castShadow = true;
-spotLight.shadow.bias = -0.0001;
-scene.add(spotLight);
-
+const ambientLight = new THREE.AmbientLight(0xffffff); 
+scene.add(ambientLight);
 const loader = new GLTFLoader().setPath('public/maxwell/');
 loader.load('scene.gltf', (gltf) => {
   console.log('loading model');
