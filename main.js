@@ -8,8 +8,9 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0xf0f0f0);
+renderer.physicallyCorrectLights = true;
 renderer.setPixelRatio(window.devicePixelRatio);
-
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
@@ -31,10 +32,10 @@ controls.autoRotate = false;
 controls.target = new THREE.Vector3(0, 1, 0);
 controls.update();
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+const ambientLight = new THREE.AmbientLight(0xf0f0f0, 0.8);
 scene.add(ambientLight);
 
-const spotLight = new THREE.SpotLight(0xffffff, 300, 1000, 0.22, 1);
+const spotLight = new THREE.SpotLight(0xf0f0f0, 300, 1000, 0.22, 1);
 spotLight.position.set(0, 100, 0);
 spotLight.castShadow = true;
 spotLight.shadow.bias = -0.0001;
